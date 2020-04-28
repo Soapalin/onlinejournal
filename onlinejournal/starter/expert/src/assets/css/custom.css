@@ -1,0 +1,7 @@
+
+/* Create a space between the two buttons (email and logout) */
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
