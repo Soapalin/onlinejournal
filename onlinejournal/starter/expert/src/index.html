@@ -34,7 +34,23 @@
   <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
 
   <!-- Initialize Firebase -->
-  <script src="/__/firebase/init.js"></script>
+  <!-- <script src="/__/firebase/init.js"></script> -->
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBzS-Jv_3e29tI6GY7wO50PqOAPa2nqY6Y",
+      authDomain: "online-journal-3622d.firebaseapp.com",
+      databaseURL: "https://online-journal-3622d.firebaseio.com",
+      projectId: "online-journal-3622d",
+      storageBucket: "online-journal-3622d.appspot.com",
+      messagingSenderId: "55996362881",
+      appId: "1:55996362881:web:9d333dc09360ceae021d80",
+      measurementId: "G-YQWH5KGL87"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
   <!-- JQUERY CDN -->
   <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
 
@@ -66,7 +82,7 @@
         </section>
 
         <a class="btn btn-sm btn-round btn-light" id="glogin">Login</a>
-        <a class="btn btn-sm btn-round btn-light" id="email" style="display : none;"></a>
+        <a class="btn btn-sm btn-round btn-light" id="email" style="display : none; padding-right: 5px;"></a>
         <a class="btn btn-sm btn-round btn-dark" id="glogout" style="display: none;">Logout</a>
         
 
@@ -160,9 +176,11 @@
     <!-- Scripts -->
     <script src="assets/js/page.min.js"></script>
     <script>
+    var db = firebase.firestore();
 
 
-$("#glogin").click(function() {
+// login through google auth popup
+    $("#glogin").click(function() {
       var provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider).then(function(result) {
       // This gives you a Google Access Token. You can use it to access the Google API.
@@ -170,12 +188,32 @@ $("#glogin").click(function() {
       // The signed-in user info.
       var user = result.user;
       console.log(user);
-      // ...
-      alert("Welcome " + user.displayName);
       $("#glogin").hide();
       document.getElementById("email").innerHTML = user.email;
       $("#email").show();
       $("#glogout").show();
+
+      var docRef = db.collection("users").doc(user.uid);
+      console.log("1");
+      docRef.get().then(function(doc) {
+        console.log("2");
+        if(!doc.exists) {
+          console.log("3");
+          docRef.set({
+            displayName: user.displayName,
+            email: user.email
+          }).then(function() {
+            console.log("Document successfully written!");
+          })
+          .catch(function(error) {
+              console.error("Error writing document: ", error);
+          });
+        }
+      }).catch(function(error) {
+        console.log("Error getting document:", error);
+      });
+
+
 
     }).catch(function(error) {
       // Handle Errors here.
@@ -189,6 +227,7 @@ $("#glogin").click(function() {
     });
     });
 
+// logout 
     $("#glogout").click(function() {
           firebase.auth().signOut().then(function() {
               // Sign-out successful.
