@@ -74,9 +74,8 @@
           <span class="navbar-divider d-mobile-none"></span>
 
           <nav class="nav nav-navbar">
-            <a class="nav-link" href="#">Create a new Journalz</a>
-            <a class="nav-link" href="#">New Entry</a>
-            <a class="nav-link" href="#">Journalz</a>
+            <a class="nav-link" href="#createjournalz.html" id="createjournalz" style="display: none;">Create a new Journalz</a>
+            <a class="nav-link" href="#myjournalz" id="myjournalz" style="display: none;">My Journalz</a>
           </nav>
         </section>
 
@@ -194,6 +193,8 @@
               document.getElementById("email").innerHTML = user.email;
               $("#email").show();
               $("#glogout").show();
+              $("#createjournalz").show();
+              $("#myjournalz").show();
           } else {
               // No user is signed in.
           }
@@ -212,6 +213,8 @@
       document.getElementById("email").innerHTML = user.email;
       $("#email").show();
       $("#glogout").show();
+      $("#createjournalz").show();
+      $("#myjournalz").show();
 
       if (user.emailVerified === true) {
         firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -263,6 +266,9 @@
               $("#glogout").hide();
               $("#email").hide();
               $("#glogin").show();
+              $("#createjournalz").hide();
+              $("#myjournalz").hide();
+              
 
 
           }, function(error) {
