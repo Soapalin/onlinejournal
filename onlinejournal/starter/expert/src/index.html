@@ -136,6 +136,14 @@
         </div>
       </section>
 
+      <section class="section">
+        <div class="container">
+
+
+        </div>
+
+      </section>
+
 
 
     </main>
@@ -177,6 +185,19 @@
     <script src="assets/js/page.min.js"></script>
     <script>
     var db = firebase.firestore();
+    var uid;
+
+    firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+              uid = user.uid;
+              $("#glogin").hide();
+              document.getElementById("email").innerHTML = user.email;
+              $("#email").show();
+              $("#glogout").show();
+          } else {
+              // No user is signed in.
+          }
+      });
 
 
 // login through google auth popup
@@ -187,18 +208,26 @@
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
-      console.log(user);
       $("#glogin").hide();
       document.getElementById("email").innerHTML = user.email;
       $("#email").show();
       $("#glogout").show();
 
+      if (user.emailVerified === true) {
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(function () {
+                return firebase.auth().signInWithEmailAndPassword(email, password);
+            })
+            .catch(function (error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+            });
+      }
+
       var docRef = db.collection("users").doc(user.uid);
-      console.log("1");
       docRef.get().then(function(doc) {
-        console.log("2");
         if(!doc.exists) {
-          console.log("3");
           docRef.set({
             displayName: user.displayName,
             email: user.email
@@ -234,7 +263,6 @@
               $("#glogout").hide();
               $("#email").hide();
               $("#glogin").show();
-              alert("Logged out successfully.")
 
 
           }, function(error) {
