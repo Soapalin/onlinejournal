@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
 
-    <title>Journalz - Homepage</title>
+    <title>Journalz - Create a new Journalz</title>
 
     <!-- Styles -->
     <link href="assets/css/page.min.css" rel="stylesheet">
@@ -112,17 +112,18 @@
       <section class="section">
         <div class="container">
           <header class="section-header">
+            <h1  style="text-align: center;">Create a new Journalz</h1>
+          </header>
             <div style="text-align: center; margin-right: 10%; margin-left: 10%">
-              <h1  style="text-align: center;">Register your device</h1>
                 <br>
                 Device name:
                 <br>
-                <input class="form-control form-control-lg" type="text" name="botname" id="botname" style="border-color: grey;" placeholder="Enter your chosen Journalz name ...">
+                <input class="form-control form-control-lg" type="text" name="journalzName" id="journalzName" style="text-align: center; border-color: grey;" placeholder="Enter your chosen Journalz name ...">
                 <br>
                 <br>
                 Description:
                 <br>
-                <input class="form-control form-control-lg" type="text" name="metatags" id="metatags" style="border-color: grey;" placeholder="Enter a brief description of the Journalz you are creating ...">
+                <textarea class="form-control form-control-lg" name="description" id="description" style="border-color: grey; height: 200px;" placeholder="Enter a brief description of your Journalz..."></textarea>
                 <input type="hidden" name="uid" id="uid">
                 <br>
                 <br>
@@ -131,28 +132,9 @@
                 <div id="loader" class="loader" style="display:none; text-align: center;"></div>
     
             </div>
-          </header>
-
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-
-
-
-            </div>
-          </div>
-
-
+          
         </div>
       </section>
-
-      <section class="section">
-        <div class="container">
-
-
-        </div>
-
-      </section>
-
 
 
     </main>
@@ -272,22 +254,49 @@
 
 // logout 
     $("#glogout").click(function() {
-          firebase.auth().signOut().then(function() {
-              // Sign-out successful.
-              $("#glogout").hide();
-              $("#email").hide();
-              $("#glogin").show();
-              $("#createjournalz").hide();
-              $("#myjournalz").hide();
+      firebase.auth().signOut().then(function() {
+          // Sign-out successful.
+          $("#glogout").hide();
+          $("#email").hide();
+          $("#glogin").show();
+          $("#createjournalz").hide();
+          $("#myjournalz").hide();
 
 
-          }, function(error) {
-              // An error happened.
-              console.log(error);
-          });
+      }, function(error) {
+          // An error happened.
+          console.log(error);
+      });
     });
 
 
+    $("#createNewJournalz").click(function(e) {
+      if($("#uid").val()) {
+        var uid = $("#uid").val();
+        var formdata = {
+          journalzName: $("#journalzName").val(),
+          description: $("#description").val()
+        }
+
+        db.collection("users").doc(uid).collection("myjournalz").doc(formdata.journalzName).set({"description": formdata.description})
+        .then(function(docRef) {
+          alert("Your Journalz has been successfully created.");
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+
+
+
+
+      }
+      else {
+        alert("You are not logged in!");
+      }
+
+
+    
+    });
 
 
   </script>
