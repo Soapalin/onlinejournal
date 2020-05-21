@@ -102,13 +102,6 @@
 
     <!-- Main Content -->
     <main class="main-content">
-
-
-      <!--
-      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
-      | Populate the page
-      |‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒
-      !-->
       <section class="section">
         <div class="container">
           <header class="section-header">
@@ -116,7 +109,7 @@
           </header>
             <div style="text-align: center; margin-right: 10%; margin-left: 10%">
                 <br>
-                Device name:
+                Journalz Name:
                 <br>
                 <input class="form-control form-control-lg" type="text" name="journalzName" id="journalzName" style="text-align: center; border-color: grey;" placeholder="Enter your chosen Journalz name ...">
                 <br>
@@ -128,15 +121,14 @@
                 <br>
                 <br>
     
-                <button class="btn btn-lg btn-primary" id="createNewJournalz">Submit</button>
-                <div id="loader" class="loader" style="display:none; text-align: center;"></div>
-    
+                <button class="btn btn-lg btn-primary" id="createJournalZBtn">Submit</button>
+                <div style="text-align: center;">
+                  <div id="loader" class="loader" style="display:none; text-align: center;"></div>
+                </div>
             </div>
           
         </div>
       </section>
-
-
     </main>
 
 
@@ -270,7 +262,9 @@
     });
 
 
-    $("#createNewJournalz").click(function(e) {
+    $("#createJournalZBtn").click(function(e) {
+      $("#createJournalZBtn").hide();
+      $("#loader").show();
       if($("#uid").val()) {
         var uid = $("#uid").val();
         var formdata = {
@@ -278,20 +272,31 @@
           description: $("#description").val()
         }
 
-        db.collection("users").doc(uid).collection("myjournalz").doc(formdata.journalzName).set({"description": formdata.description})
-        .then(function(docRef) {
-          alert("Your Journalz has been successfully created.");
-        })
-        .catch(function(error) {
-          console.log(error);
+        db.collection("users").doc(uid).collection("myjournalz").doc(formdata.journalzName).get().then(function(doc) {
+          if(doc.exists) {
+            alert("The Journalz name " + formdata.journalzName + "is already used.");
+            $("#createJournalZBtn").show();
+            $("#loader").hide();
+          }
+          else {
+            db.collection("users").doc(uid).collection("myjournalz").doc(formdata.journalzName).set({"description": formdata.description})
+            .then(function(docRef) {
+              alert("Your Journalz has been successfully created.");
+              $("#createJournalZBtn").show();
+              $("#loader").hide();
+            })
+            .catch(function(error) {
+              console.log(error);
+              $("#createJournalZBtn").show();
+              $("#loader").hide();
+            });
+          }
         });
-
-
-
-
       }
       else {
         alert("You are not logged in!");
+        $("#createJournalZBtn").show();
+        $("#loader").hide();
       }
 
 
