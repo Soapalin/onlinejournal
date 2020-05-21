@@ -112,8 +112,25 @@
       <section class="section">
         <div class="container">
           <header class="section-header">
-            <h2>Create a new Journalz</h2>
-            <hr>
+            <div style="text-align: center; margin-right: 10%; margin-left: 10%">
+              <h1  style="text-align: center;">Register your device</h1>
+                <br>
+                Device name:
+                <br>
+                <input class="form-control form-control-lg" type="text" name="botname" id="botname" style="border-color: grey;" placeholder="Enter your chosen Journalz name ...">
+                <br>
+                <br>
+                Description:
+                <br>
+                <input class="form-control form-control-lg" type="text" name="metatags" id="metatags" style="border-color: grey;" placeholder="Enter a brief description of the Journalz you are creating ...">
+                <input type="hidden" name="uid" id="uid">
+                <br>
+                <br>
+    
+                <button class="btn btn-lg btn-primary" id="createNewJournalz">Submit</button>
+                <div id="loader" class="loader" style="display:none; text-align: center;"></div>
+    
+            </div>
           </header>
 
           <div class="row">
@@ -182,12 +199,13 @@
     firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
               uid = user.uid;
-              $("#glogin").hide();
+              $("#glogin").hide(); // hide the login button
               document.getElementById("email").innerHTML = user.email;
-              $("#email").show();
-              $("#glogout").show();
-              $("#createjournalz").show();
-              $("#myjournalz").show();
+              $("#email").show(); // show your email
+              $("#glogout").show(); // logout logo
+              $("#createjournalz").show(); //Hyperlink to get to the other html createJournalz
+              $("#myjournalz").show(); // Show your journalz in another page
+              $("#uid").val(uid);
           } else {
               // No user is signed in.
           }
@@ -273,6 +291,31 @@
 
 
   </script>
+
+
+    <style>
+      .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+      }
+
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+
 
   </body>
 </html>
